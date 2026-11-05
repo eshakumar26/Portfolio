@@ -55,7 +55,7 @@
 html.theming, html.theming * { transition: background-color .45s ease, color .45s ease, border-color .45s ease !important; }
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
-html { font-size: 87.5%; }
+html { font-size: 87.5%; overflow-x: hidden; }
 body { background-color: var(--bg); color: var(--ink); font: 400 1.08rem/1.65 var(--body); overflow: hidden; -webkit-font-smoothing: antialiased; }
 button { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
@@ -95,7 +95,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 :root[data-theme="dark"] .theme .ic-moon { display: none; }
 
 /* Main */
-.main { position: fixed; z-index: 1; inset: 0 0 0 var(--rail); overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(120,140,190,.3) transparent; }
+.main { position: fixed; z-index: 1; inset: 0 0 0 var(--rail); overflow-x: hidden; overscroll-behavior-x: none; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(120,140,190,.3) transparent; }
 .view { max-width: 1280px; margin: 0; padding: 68px 40px 40px 28px; }
 .sec { position: relative; min-height: calc(100vh - 96px); margin: 0 0 28px; padding: 72px 48px 84px 44px; border-radius: 30px; border: 1px solid var(--line); background: var(--panel); box-shadow: 0 30px 70px -40px var(--shadow); transform-origin: 50% 50%; will-change: opacity, transform; }
 html.hc .sec { border-width: 2px; }
@@ -103,7 +103,7 @@ html.hc .sec { border-width: 2px; }
 .sec.home-sec .home { width: 100%; }
 
 .page { display: grid; grid-template-columns: minmax(150px, 190px) minmax(0, 1fr); gap: 40px; }
-#s-recommendations .page { grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); gap: 48px; }
+@media (min-width: 901px) { #s-recommendations .page { grid-template-columns: minmax(240px, 300px) minmax(0, 1fr); gap: 48px; } }
 .phead { position: sticky; top: 96px; align-self: start; }
 .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
 .phead h2 { font-family: var(--serif); font-size: clamp(1.8rem, 2.9vw, 2.5rem); line-height: 1.05; letter-spacing: -0.01em; }
@@ -253,7 +253,8 @@ html.hc .sec { border-width: 2px; }
 @media (max-width: 900px) { .skgrid { grid-template-columns: 1fr; } .skgrid .group:nth-child(n) { grid-column: auto; } }
 .award { margin-top: 12px; display: inline-block; font-family: var(--mono); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; line-height: 1.4; }
 .card .more ul.b { margin-top: 10px; }
-.float { display: grid; gap: 20px; padding: 4px 0 8px 28px; }
+.float { display: grid; gap: 20px; padding: 4px 0 8px; }
+@media (min-width: 901px) { .float { padding-left: 28px; } }
 .fi { display: grid; gap: 10px; width: min(100%, 430px); animation: fbob var(--t, 7s) ease-in-out var(--d, 0s) infinite; }
 .fi.odd { justify-self: start; }
 .fi.even { justify-self: end; }
@@ -825,7 +826,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
         '<label for="cf-email">Your email</label><input id="cf-email" name="email" type="email" autocomplete="email" required>' +
         '<label for="cf-msg">Message</label><textarea id="cf-msg" name="msg" rows="5" required></textarea>' +
         '<p class="cerr" id="cf-err" role="alert" hidden></p>' +
-        '<input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0"><button class="btn" type="submit">' + (FORM_KEY ? "Send message" : "Prepare message") + '</button><p class="cok" id="cf-ok" role="status" hidden></p>' +
+        '<input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;opacity:0;height:0;width:0;overflow:hidden;pointer-events:none"><button class="btn" type="submit">' + (FORM_KEY ? "Send message" : "Prepare message") + '</button><p class="cok" id="cf-ok" role="status" hidden></p>' +
         '<div class="cdone" id="cf-done" hidden><p class="txt">Your message is ready, but it has not been sent yet. Open it in your email app, or copy it and send it to <b>' + CONTACT.email + '</b>.</p><div class="btns" style="margin-top:12px"><a class="btn small" id="cf-mail" href="#">Open in email app</a><button class="btn small" type="button" id="cf-copy">Copy message</button></div><p class="txt" id="cf-copied" hidden style="margin-top:8px">Copied.</p></div></form>';
       return page("contact", "Contact Info", "Open to conversations about product roles across technology and cybersecurity.", '<div class="rows">' + rows.join("") + "</div>" + form);
     },
