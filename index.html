@@ -770,7 +770,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     resume: function () {
       var has = !!RESUME.b64;
       return page("resume", "Resume", "Everything on one page, no scavenger hunt required. Download the PDF below.",
-        '<div class="resume">' + (RESUME.thumb ? '<img class="rprev" src="' + RESUME.thumb + '" alt="First page of the resume">' : '<div class="doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>') + '<div><p class="sub" style="margin-top:0">PDF · ' + (has ? "Ready to download" : "File not added yet") + '</p><div class="btns" style="margin-top:18px"><button class="btn primary" id="dl" type="button"' + (has ? "" : " disabled") + '>Download PDF</button></div></div></div><p class="note" id="dlnote">' + (has ? "" : "The download button turns on once the PDF is added.") + "</p>");
+        '<div class="resume">' + (RESUME.thumb ? '<img class="rprev" src="' + RESUME.thumb + '" alt="First page of the resume">' : '<div class="doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>') + '<div><p class="sub" style="margin-top:0">PDF · ' + (has ? "Ready to download" : "File not added yet") + '</p><div class="btns" style="margin-top:18px">' + (has ? '<a class="btn primary" id="dl" href="Esha-Kumar-Product-Manager-Resume.pdf" download="Esha-Kumar-Product-Manager-Resume.pdf" target="_blank" rel="noopener">Download PDF</a>' : '<button class="btn primary" id="dl" type="button" disabled>Download PDF</button>') + '</div></div></div><p class="note" id="dlnote">' + (has ? "" : "The download button turns on once the PDF is added.") + "</p>");
     },
     education: function () {
       return page("education", "Education", "Open an entry for the coursework, wins and a short summary.", '<div class="tl">' + EDU.map(function (e) {
@@ -1063,7 +1063,6 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     if (g) { var gv = g.dataset.go, gi = isNaN(+gv) ? SECTIONS.findIndex(function (x) { return x.id === gv; }) : +gv; go(gi); if (rail.contains(document.activeElement)) document.activeElement.blur(); return; }
     var t = e.target.closest("[data-toggle]");
     if (t) { var m = t.closest(".card").querySelector(".more"), open = m.hidden; m.hidden = !open; t.setAttribute("aria-expanded", String(open)); t.textContent = open ? "Hide details" : "View details"; return; }
-    if (e.target.closest("#dl")) download();
   });
   (function () {
     var HINT = '<span class="hint">Hover or tap a dotted skill to see where I used it.</span>';
