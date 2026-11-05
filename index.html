@@ -1140,15 +1140,25 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   })();
   function download() {
     var note = $("#dlnote");
+    var blob;
     try {
       var bin = atob(RESUME.b64), arr = new Uint8Array(bin.length); for (var k = 0; k < bin.length; k++) arr[k] = bin.charCodeAt(k);
-      var blob = new Blob([arr], { type: "application/pdf" });
-      if (!window.claude || !window.claude.use) throw new Error("none");
+      blob = new Blob([arr], { type: "application/pdf" });
+    } catch (err) { note.textContent = "The download isn't available here."; return; }
+    function plain() {
+      try {
+        var url = URL.createObjectURL(blob), a = document.createElement("a");
+        a.href = url; a.download = RESUME.filename; a.rel = "noopener"; document.body.appendChild(a); a.click();
+        setTimeout(function () { a.remove(); URL.revokeObjectURL(url); }, 4000);
+        note.textContent = "";
+      } catch (e2) { note.textContent = "The download isn't available here."; }
+    }
+    if (window.claude && window.claude.use) {
       window.claude.use("downloads").then(function (dl) {
-        if (!dl) { note.textContent = "Download isn't available in this view."; return; }
+        if (!dl) { plain(); return; }
         return dl.save({ filename: RESUME.filename, data: blob });
-      }).catch(function () { note.textContent = "The download was cancelled or isn't available here."; });
-    } catch (err) { note.textContent = "The download isn't available here."; }
+      }).catch(function () { plain(); });
+    } else { plain(); }
   }
 
   buildPage();
