@@ -953,8 +953,8 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   function playSec(el, dir) {
     if (mode === "off" || !el.animate) return;
     lastPlay.set(el, Date.now());
-    if (mode === "soft") { el.animate([{ offset: 0, opacity: 0 }], { duration: 900, easing: "ease-out", fill: "backwards" }); return; }
-    el.animate([{ offset: 0, opacity: 0, transform: "translateY(" + (dir * 110) + "px) scale(0.93)" }], { duration: 1200, easing: EASE, fill: "backwards" });
+    if (mode === "soft") { el.animate([{ offset: 0, opacity: 0 }], { duration: 280, easing: "ease-out", fill: "backwards" }); return; }
+    el.animate([{ offset: 0, opacity: 0, transform: "translateY(" + (dir * 36) + "px) scale(0.975)" }], { duration: 380, easing: EASE, fill: "backwards" });
   }
   function replayPending() {
     if (pendingIdx < 0) return; var sec = secs[pendingIdx]; pendingIdx = -1; clearTimeout(playTimer);
@@ -975,15 +975,15 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   function fxApply(s, e, dir) {
     if (e < 0.004) { s.style.opacity = ""; s.style.transform = ""; s.style.filter = ""; return; }
     if (mode === "soft") { s.style.transform = ""; s.style.filter = ""; s.style.opacity = (1 - 0.8 * e).toFixed(3); return; }
-    s.style.opacity = (1 - 0.95 * e).toFixed(3);
-    s.style.transform = "translateY(" + (dir * 64 * e).toFixed(1) + "px) perspective(1500px) rotateX(" + (dir * 7 * e).toFixed(2) + "deg) scale(" + (1 - 0.12 * e).toFixed(4) + ")";
-    s.style.filter = e > 0.03 ? "blur(" + (9 * e).toFixed(1) + "px)" : "";
+    s.style.opacity = (1 - 0.85 * e).toFixed(3);
+    s.style.transform = "translateY(" + (dir * 24 * e).toFixed(1) + "px) perspective(1500px) rotateX(" + (dir * 3 * e).toFixed(2) + "deg) scale(" + (1 - 0.05 * e).toFixed(4) + ")";
+    s.style.filter = e > 0.03 ? "blur(" + (3 * e).toFixed(1) + "px)" : "";
   }
   function fxStep() {
     var moving = false;
     secs.forEach(function (s) {
       var st = s._fx; if (!st) return; var diff = st.t - st.c;
-      if (Math.abs(diff) > 0.002) { st.c += diff * 0.14; moving = true; } else st.c = st.t;
+      if (Math.abs(diff) > 0.002) { st.c += diff * 0.32; moving = true; } else st.c = st.t;
       fxApply(s, st.c, st.dir);
     });
     if (moving && mode !== "off") requestAnimationFrame(fxStep); else fxRunning = false;
@@ -1004,7 +1004,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   main.addEventListener("scrollend", function () { lockUntil = 0; spy(); replayPending(); });
   function go(i, instant) {
     var sec = secs[i]; if (!sec) return;
-    var soft = !(instant || reduce);
+    var soft = false; /* menu jumps land at once, then the section eases in quickly */
     setActive(i, true); lockUntil = Date.now() + (soft ? 3200 : 250);
     main.scrollTo({ top: Math.max(0, sec.offsetTop - 68), behavior: soft ? "smooth" : "auto" });
     setRail(false);
