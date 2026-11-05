@@ -433,7 +433,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 .pa-m.me { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 5px; }
 .pa-m.bot { align-self: flex-start; background: var(--accent-soft); border: 1px solid var(--line); border-bottom-left-radius: 5px; }
 .pa-m p { margin: 0; }
-.pa-m p + p, .pa-m ul + p { margin-top: 8px; }
+.pa-m p + p { margin-top: 9px; }
 .pa-m ul { margin: 6px 0 0; padding-left: 1.05rem; display: grid; gap: 5px; }
 .pa-act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
 .pa-act a, .pa-go { font: 600 .8rem var(--body, inherit); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); text-decoration: none; cursor: pointer; }
@@ -1203,7 +1203,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     var RESUME_FILE = "Esha-Kumar-Product-Manager-Resume.pdf";
     function plain(s) { return String(s == null ? "" : s).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(); }
     function list(a) { return a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0] || ""; }
-    function cut(s, n) { s = plain(s); if (s.length <= n) return s; var c = s.slice(0, n), i = Math.max(c.lastIndexOf(". "), c.lastIndexOf("; ")); return (i > n * 0.5 ? c.slice(0, i + 1) : c.replace(/\s+\S*$/, "") + "…"); }
+    function cut(s, n) { s = plain(s); if (s.length <= n) return s; var c = s.slice(0, n), i = Math.max(c.lastIndexOf(". "), c.lastIndexOf("; ")); if (i > n * 0.5) return c.slice(0, i + 1); var j = c.lastIndexOf(", "); if (j > n * 0.5) return c.slice(0, j); return c.replace(/\s+\S*$/, ""); }
 
     var STOP = "a an the and or but of to in on at for with from by is are was were be been am do does did has have had can could would should will it its this that these those she her hers he his they their them you your i me my we our what which who whom how why when where about tell me please any some there than then so as if not no yes also just more most much many very really give show let know get got say said think thought time favorite favourite thing things".split(" ");
     var stopSet = {}; STOP.forEach(function (w) { stopSet[w] = 1; });
@@ -1246,7 +1246,7 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       add({ kind: "edu", title: e.school + " " + e.degree + " education degree university school study " + (e.courses || []).join(" "), go: "education", label: "Education", lead: "Esha studied " + e.degree + " at " + e.school + " (" + e.years + (e.place ? ", " + e.place : "") + ").", lines: ls });
     });
     SKILLS.forEach(function (g) {
-      add({ kind: "skills", title: g[0] + " skills " + g[1].join(" "), go: "skills", label: "Skills", lead: "Esha's " + g[0].toLowerCase() + " skills:", lines: [list(g[1])] });
+      add({ kind: "skills", title: g[0] + " skills " + g[1].join(" "), go: "skills", label: "Skills", lead: "On the " + g[0].toLowerCase() + " side, Esha's toolbox includes", lines: [list(g[1])] });
     });
     Object.keys(USED).forEach(function (k) {
       add({ kind: "used", title: k + " skill used experience", go: "skills", label: "Skills", lead: "Esha has used " + k + " at " + list(USED[k]) + ".", lines: [] });
@@ -1300,6 +1300,61 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       return best.map(function (x) { return x.l; });
     }
 
+
+    /* ---------- storytelling helpers ---------- */
+    var IRR = " led built ran drove wrote made took set cut won grew taught put sold spoke drew chose began brought kept held found gave got shaped ";
+    function isVerb(w) { return /ed$/.test(w) || IRR.indexOf(" " + w.toLowerCase() + " ") > -1; }
+    function fp(s) { return plain(s).replace(/\bI'm\b/g, "she's").replace(/\bI am\b/g, "she is").replace(/\bI've\b/g, "she's").replace(/\bI'd\b/g, "she'd").replace(/\bI'll\b/g, "she'll").replace(/\bI\b/g, "she").replace(/\bmyself\b/g, "herself").replace(/\bmy\b/gi, "her").replace(/\bme\b/g, "her").replace(/(^|[.!?]\s+)she\b/g, function (m, a) { return a + "She"; }); }
+    function lc(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
+    function trim1(s) { return plain(s).replace(/[.\s]+$/, ""); }
+    var LINKUP = ["One highlight: she", "She also", "And along the way, she"];
+    function narrate(lines) {
+      var out = [], k = 0;
+      lines.forEach(function (l) {
+        l = trim1(l); if (!l) return;
+        var w = l.split(/\s+/)[0];
+        if (isVerb(w)) { out.push(LINKUP[Math.min(k, LINKUP.length - 1)] + " " + lc(l) + "."); k++; }
+        else out.push(l.charAt(0).toUpperCase() + l.slice(1) + ".");
+      });
+      return out.join(" ");
+    }
+    function story(c, q) {
+      var paras = [], L = c.lines;
+      if (c.kind === "exp") {
+        paras.push(c.lead); var n = narrate(pickLines(c, q, 3).map(function (l) { return cut(l, 240); })); if (n) paras.push(n);
+        if (c.tags && c.tags.length) paras.push("The toolkit she leaned on: " + list(c.tags.slice(0, 6)) + ".");
+      } else if (c.kind === "edu") {
+        paras.push(c.lead);
+        var bits = [];
+        L.forEach(function (l) { if (/^Track: /.test(l)) bits.push("Her track was " + trim1(l.slice(7)) + "."); else if (/^Grade: /.test(l)) bits.push("She finished with a " + trim1(l.slice(7)) + "."); });
+        if (bits.length) paras.push(bits.join(" "));
+        var ach = L.filter(function (l) { return !/^(Track|Grade|Coursework): /.test(l) && l.length < 130 && l !== L[0]; }).slice(0, 4);
+        if (ach.length) paras.push("Along the way: " + list(ach.map(trim1)) + ".");
+        var cw = L.filter(function (l) { return /^Coursework: /.test(l); })[0]; if (cw && /course|class|learn|studied|taught|what/i.test(q)) paras.push(cw.replace(/^Coursework: /, "Her coursework included ") + ".");
+      } else if (c.kind === "proj") {
+        paras.push("Here's the story behind " + c.lead.replace(/^Project: /, "").replace(/\.$/, "") + ".");
+        var body = [c.lines[0] && /·|Top |Published|Winner|Finalist/.test(c.lines[0]) && c.lines[0].length < 110 ? c.lines[0] : "", c.lines[1] || c.lines[0]].filter(Boolean);
+        var award = body.length > 1 ? body[0] : "", txt = body[body.length - 1];
+        paras.push(fp(cut(txt, 380)));
+        if (award) paras.push("Along the way it picked up this recognition: " + trim1(award) + ".");
+        var rest = { lines: c.lines.slice(2), kind: "x" }, sec = pickLines(rest, q, 1)[0];
+        if (sec) { var m = sec.match(/^([^:]+): (.*)$/); paras.push(m ? "On \"" + m[1].toLowerCase() + "\": " + fp(cut(m[2], 300)) : fp(cut(sec, 300))); }
+      } else if (c.kind === "rec") {
+        paras.push(c.lead.replace(/ wrote about working with Esha\.\s*/, " said this about working with Esha. ").replace(/\.\s*\.$/, ".")); paras.push("“" + trim1(L[0]) + "…”");
+      } else if (c.kind === "about") {
+        if (c.lines.length > 1) { paras.push(c.lead); paras.push("Here's how she tells it herself."); } else paras.push("“" + L[0] + "”");
+      } else if (c.kind === "beyond") {
+        paras.push("Away from the desk, Esha paints."); paras.push("In her words: “" + L[0] + "”");
+      } else if (c.kind === "skills") {
+        paras.push(c.lead + " " + L[0] + ".");
+      } else if (c.kind === "now") {
+        paras.push(c.lead); var n2 = narrate(L.map(function (l) { return cut(l, 240); })); if (n2) paras.push(n2);
+      } else {
+        paras.push(c.lead); if (L.length) paras.push(L.slice(0, 2).map(function (l) { return trim1(l) + "."; }).join(" "));
+      }
+      return paras;
+    }
+
     /* ---------- answering ---------- */
     var CHIPS = ["What does Esha do today?", "Tell me about her projects", "What skills does she have?", "Where did she study?", "How can I contact her?"];
     function answer(q) {
@@ -1313,14 +1368,12 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       }
       var top = res[0], picks = [top];
       for (var i = 1; i < res.length && picks.length < 2; i++) if (res[i].s >= top.s * 0.72 && res[i].c.kind === top.c.kind && res[i].c.kind !== "used") picks.push(res[i]);
-      if (top.c.kind === "used" || top.c.kind === "skills") { picks = [top]; }
+      if (top.c.kind === "used") { picks = [top]; }
+      if (top.c.kind === "skills") { picks = KB.filter(function (c) { return c.kind === "skills"; }).map(function (c) { return { c: c, s: 1 }; }); }
+      if (top.c.kind === "about") { picks = KB.filter(function (c) { return c.kind === "about"; }).map(function (c) { return { c: c, s: 1 }; }); }
       var out = { blocks: [], links: [], go: top.c.go, label: top.c.label };
       picks.forEach(function (p) {
-        var c = p.c, lines;
-        if (c.kind === "proj") { var head = c.lines.slice(0, 2).filter(Boolean), rest = { lines: c.lines.slice(2), kind: "x" }; lines = head.concat(pickLines(rest, q, 1)).filter(function (v, i, a) { return a.indexOf(v) === i; }); }
-        else lines = c.lines.length ? pickLines(c, q, c.kind === "exp" || c.kind === "edu" ? 3 : 2) : [];
-        lines = lines.map(function (l) { return cut(l, 230); });
-        out.blocks.push({ lead: c.lead, lines: lines });
+        var c = p.c; out.blocks.push({ paras: story(c, q) });
         c.links.forEach(function (l) { out.links.push(l); });
       });
       var seen = {}; out.links = out.links.filter(function (l) { if (seen[l[1]]) return false; seen[l[1]] = 1; return true; }).slice(0, 4);
@@ -1344,9 +1397,8 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
     function setChips(a) { chipsEl.innerHTML = ""; (a || []).forEach(function (t) { var b = document.createElement("button"); b.type = "button"; b.className = "pa-chip"; b.textContent = t; b.addEventListener("click", function () { ask(t); }); chipsEl.appendChild(b); }); }
     function render(a) {
       var m = msg("bot");
-      (a.blocks || [{ lead: a.lead, lines: [] }]).forEach(function (b) {
-        if (b.lead) { var p = document.createElement("p"); p.textContent = b.lead; m.appendChild(p); }
-        if (b.lines && b.lines.length) { var ul = document.createElement("ul"); b.lines.forEach(function (l) { var li = document.createElement("li"); li.textContent = l; ul.appendChild(li); }); m.appendChild(ul); }
+      (a.blocks || [{ paras: [a.lead] }]).forEach(function (b) {
+        b.paras.forEach(function (t) { if (!t) return; var p = document.createElement("p"); p.textContent = t; m.appendChild(p); });
       });
       var act = document.createElement("div"); act.className = "pa-act";
       (a.links || []).forEach(function (l) { var x = document.createElement("a"); x.href = l[1]; x.textContent = l[0]; if (!/^mailto:/.test(l[1])) { x.target = "_blank"; x.rel = "noopener noreferrer"; } act.appendChild(x); });
