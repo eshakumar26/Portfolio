@@ -415,6 +415,44 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 .a11y { top: max(12px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
 .railtoggle { top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); }
 .theme:active, .a11y:active { transform: none; }
+
+/* ===== Esha's PA ===== */
+.pa-fab { position: fixed; z-index: 35; right: 18px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: inline-flex; align-items: center; gap: 10px; padding: 13px 20px 13px 16px; border-radius: 999px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); font: 600 .93rem var(--body, inherit); cursor: pointer; box-shadow: 0 14px 34px -12px var(--accent); transition: transform .25s ease, box-shadow .25s ease; }
+.pa-fab svg { width: 20px; height: 20px; fill: currentColor; flex: none; }
+@media (hover: hover) { .pa-fab:hover { transform: translateY(-2px); } }
+.pa-fab:focus-visible, .pa-x:focus-visible, .pa-chip:focus-visible, .pa-send:focus-visible, .pa-act a:focus-visible, .pa-go:focus-visible, .pa-form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.pa-panel { position: fixed; z-index: 36; right: 18px; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); width: 380px; max-width: calc(100vw - 24px); height: min(580px, calc(100dvh - 110px)); display: flex; flex-direction: column; background: var(--rail-bg, var(--bg)); color: var(--ink); border: 1px solid var(--line); border-radius: 22px; box-shadow: 0 30px 70px -24px rgba(2, 8, 40, .55); overflow: hidden; }
+.pa-panel[hidden] { display: none; }
+.pa-head { display: flex; align-items: center; gap: 12px; padding: 14px 14px 12px 16px; border-bottom: 1px solid var(--line); }
+.pa-head b { display: block; font-size: 1rem; }
+.pa-head small { color: var(--muted); font-size: .78rem; }
+.pa-av { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font: 600 .78rem var(--mono, monospace); letter-spacing: .04em; border: 1px solid var(--line); flex: none; }
+.pa-x { margin-left: auto; width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 1.3rem; line-height: 1; cursor: pointer; flex: none; }
+.pa-log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; overscroll-behavior: contain; scrollbar-width: thin; }
+.pa-m { max-width: 92%; padding: 10px 13px; border-radius: 16px; font-size: .92rem; line-height: 1.5; overflow-wrap: anywhere; }
+.pa-m.me { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-bottom-right-radius: 5px; }
+.pa-m.bot { align-self: flex-start; background: var(--accent-soft); border: 1px solid var(--line); border-bottom-left-radius: 5px; }
+.pa-m p { margin: 0; }
+.pa-m p + p, .pa-m ul + p { margin-top: 8px; }
+.pa-m ul { margin: 6px 0 0; padding-left: 1.05rem; display: grid; gap: 5px; }
+.pa-act { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pa-act a, .pa-go { font: 600 .8rem var(--body, inherit); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); text-decoration: none; cursor: pointer; }
+.pa-go { background: var(--accent); color: var(--on-accent); }
+.pa-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+.pa-chip { font: 500 .8rem var(--body, inherit); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; text-align: left; }
+@media (hover: hover) { .pa-chip:hover, .pa-act a:hover { border-color: var(--accent); background: var(--accent-soft); } }
+.pa-form { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.pa-form input { flex: 1; min-width: 0; font: 400 16px var(--body, inherit); padding: 10px 14px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); }
+.pa-send { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--accent); color: var(--on-accent); display: grid; place-items: center; cursor: pointer; flex: none; }
+.pa-send svg { width: 18px; height: 18px; fill: currentColor; }
+.pa-foot { margin: 0; padding: 0 14px 12px; font-size: .72rem; color: var(--muted); }
+@media (max-width: 700px) {
+  .pa-fab { right: 12px; padding: 12px 16px 12px 14px; }
+  .pa-fab span { font-size: .88rem; }
+  .pa-panel { right: 8px; left: 8px; width: auto; max-width: none; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); height: min(78dvh, 640px); border-radius: 20px; }
+  .pa-fab.is-open { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .pa-fab { transition: none; } }
 </style>
 </head>
 <body>
@@ -1159,6 +1197,184 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
       }).catch(function () { plain(); });
     } else { plain(); }
   }
+
+  /* ===== Esha's PA: a small on-page assistant that answers from the content above. No server, no API. ===== */
+  (function () {
+    var RESUME_FILE = "Esha-Kumar-Product-Manager-Resume.pdf";
+    function plain(s) { return String(s == null ? "" : s).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim(); }
+    function list(a) { return a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : a[0] || ""; }
+    function cut(s, n) { s = plain(s); if (s.length <= n) return s; var c = s.slice(0, n), i = Math.max(c.lastIndexOf(". "), c.lastIndexOf("; ")); return (i > n * 0.5 ? c.slice(0, i + 1) : c.replace(/\s+\S*$/, "") + "…"); }
+
+    var STOP = "a an the and or but of to in on at for with from by is are was were be been am do does did has have had can could would should will it its this that these those she her hers he his they their them you your i me my we our what which who whom how why when where about tell me please any some there than then so as if not no yes also just more most much many very really give show let know get got say said think thought time favorite favourite thing things".split(" ");
+    var stopSet = {}; STOP.forEach(function (w) { stopSet[w] = 1; });
+    function stem(w) { w = w.toLowerCase(); if (w.length > 5 && /ies$/.test(w)) return w.slice(0, -3) + "y"; if (w.length > 5 && /(ing|ed)$/.test(w)) return w.replace(/(ing|ed)$/, ""); if (w.length > 4 && /s$/.test(w) && !/ss$/.test(w)) return w.slice(0, -1); return w; }
+    function tok(s) { return (String(s).toLowerCase().match(/[a-z0-9+#.]+/g) || []).map(function (w) { return w.replace(/^\.+|\.+$/g, ""); }).filter(function (w) { return w && !stopSet[w]; }).map(stem); }
+    var SYN = {
+      job: "experience role company", work: "experience role company", career: "experience role company", employ: "experience role company", employer: "experience role company", position: "experience role",
+      school: "education degree", university: "education degree", college: "education degree", study: "education degree", degree: "education degree", master: "education degree", graduate: "education degree", gpa: "education grade", grade: "education grade", course: "education coursework", coursework: "education coursework",
+      hobby: "artworks painting art", paint: "artworks painting art", draw: "artworks painting art", creative: "artworks painting art", art: "artworks painting", outside: "artworks painting", fun: "artworks painting",
+      reach: "contact email", email: "contact email", hire: "contact email", hiring: "contact email", connect: "contact linkedin", linkedin: "contact linkedin", mail: "contact email", touch: "contact email", message: "contact email", phone: "contact email",
+      cv: "resume pdf", resume: "resume pdf", download: "resume pdf",
+      skill: "skills tools technologies", tool: "skills tools", tech: "skills technologies", stack: "skills technologies", expertise: "skills", strength: "skills", good: "skills", know: "skills",
+      project: "projects built", build: "projects built", ship: "projects built", portfolio: "projects", side: "projects",
+      recommend: "recommendation colleague", recommendation: "recommendation colleague", testimonial: "recommendation colleague", colleague: "recommendation colleague", endorse: "recommendation colleague", review: "recommendation", manager: "recommendation colleague",
+      live: "location based", location: "location based", city: "location based", where: "location based", nashville: "location based", relocate: "location based",
+      background: "about story", bio: "about story", introduce: "about story", story: "about story", journey: "about story", who: "about story",
+      security: "cybersecurity iam", cyber: "cybersecurity iam", identity: "iam identity", pam: "pam privileged access", privileged: "pam privileged access",
+      award: "award fellowship scholarship winner", win: "award winner", achievement: "award winner", accomplishment: "award winner", impact: "metrics result",
+      article: "articles substack writing", blog: "articles substack writing", writing: "articles substack writing", substack: "articles substack writing", newsletter: "articles substack writing", github: "github code links"
+    };
+    var synS = {}; Object.keys(SYN).forEach(function (k) { synS[stem(k)] = SYN[k]; });
+
+    /* ---------- build the knowledge base from the portfolio data ---------- */
+    var KB = [];
+    function add(o) { o.lines = (o.lines || []).map(plain).filter(Boolean); o.title = plain(o.title); o.lead = plain(o.lead); o.links = o.links || []; KB.push(o); }
+
+    add({ kind: "about", title: "About Esha background story who", go: "home", label: "Home", lead: PROFILE.first + " " + PROFILE.last + " is " + (PROFILE.now.charAt(0).toLowerCase() === PROFILE.now.charAt(0) ? "" : "a ") + PROFILE.now + ", based in " + (CONTACT.location || PROFILE.place) + ".", lines: [PROFILE.headline].concat(PROFILE.tags && PROFILE.tags.length ? ["Focus: " + list(PROFILE.tags)] : []) });
+    (PROFILE.about || []).forEach(function (p, i) { add({ kind: "about", title: "About Esha background story journey why", go: "home", label: "Home", lead: i === 0 ? "In Esha's own words:" : "", lines: [p] }); });
+    add({ kind: "now", title: "Current role today now job company position", go: "experience", label: "Experience", lead: "Right now, Esha is " + PROFILE.now + ".", lines: (EXP[0].bullets || []).slice(0, 2) });
+    add({ kind: "location", title: "Location based live where city", go: "contact", label: "Contact Info", lead: "Esha is based in the " + (CONTACT.location || PROFILE.place) + (PROFILE.tags && PROFILE.tags.indexOf("Nashville, TN") > -1 ? ", and her work base is Nashville, TN" : "") + ".", lines: [] });
+
+    EXP.forEach(function (e) {
+      var cur = /present/i.test(e.period);
+      add({ kind: "exp", title: e.role + " " + e.company + " experience work job " + (cur ? "current" : "previous past"), go: "experience", label: "Experience",
+        lead: "At " + e.company + ", Esha " + (cur ? "is" : "was") + " " + e.role + " (" + e.period + ").", lines: [e.summary].concat(e.bullets || []), tags: e.tags });
+    });
+    EDU.forEach(function (e) {
+      var ls = [e.summary, e.track ? "Track: " + e.track : "", e.grade ? "Grade: " + e.grade : ""].concat(e.ach || []).concat(e.acts || []);
+      if (e.courses && e.courses.length) ls.push("Coursework: " + list(e.courses));
+      add({ kind: "edu", title: e.school + " " + e.degree + " education degree university school study " + (e.courses || []).join(" "), go: "education", label: "Education", lead: "Esha studied " + e.degree + " at " + e.school + " (" + e.years + (e.place ? ", " + e.place : "") + ").", lines: ls });
+    });
+    SKILLS.forEach(function (g) {
+      add({ kind: "skills", title: g[0] + " skills " + g[1].join(" "), go: "skills", label: "Skills", lead: "Esha's " + g[0].toLowerCase() + " skills:", lines: [list(g[1])] });
+    });
+    Object.keys(USED).forEach(function (k) {
+      add({ kind: "used", title: k + " skill used experience", go: "skills", label: "Skills", lead: "Esha has used " + k + " at " + list(USED[k]) + ".", lines: [] });
+    });
+    PROJECTS.forEach(function (p) {
+      var ls = [p.award ? p.award : "", p.text];
+      (p.sections || []).forEach(function (s) { ls.push(s[0] + ": " + (Array.isArray(s[1]) ? s[1].join(" · ") : s[1])); });
+      add({ kind: "proj", title: p.title + " " + (p.meta || "") + " project built product", go: "projects", label: "Projects", lead: "Project: " + p.title + (p.meta ? " (" + p.meta + ")" : "") + ".", lines: ls, links: p.links || [], pick: true });
+    });
+    RECS.forEach(function (r) {
+      add({ kind: "rec", title: r.name + " " + r.role + " recommendation colleague", name: r.name, go: "recommendations", label: "Recommendations", lead: r.name + " (" + r.role + ") wrote about working with Esha. " + plain(r.rel || "") + ".", lines: [cut(r.quote, 300)], links: r.url ? [["Read on LinkedIn", r.url]] : [] });
+    });
+    add({ kind: "recs", title: "recommendations testimonials colleagues said people say", go: "recommendations", label: "Recommendations", lead: "Recommendations on LinkedIn come from " + list(RECS.map(function (r) { return r.name + " (" + r.role + ")"; })) + ".", lines: [] });
+    BEYOND.forEach(function (b) { add({ kind: "beyond", title: b.title + " " + (b.tags || []).join(" ") + " art painting hobby outside work creative", go: "beyond", label: "Beyond Work", lead: "Beyond work, Esha paints.", lines: [b.text] }); });
+    add({ kind: "contact", title: "Contact email reach hire linkedin connect message touch", go: "contact", label: "Contact Info", lead: "The best way to reach Esha is by email at " + CONTACT.email + " or on LinkedIn. The Contact Info page also has a form.", lines: [], links: [["Email Esha", "mailto:" + CONTACT.email], ["LinkedIn", CONTACT.linkedin]] });
+    add({ kind: "resume", title: "Resume cv download pdf", go: "resume", label: "Resume", lead: "Esha's resume is on the Resume page, and you can download the PDF.", lines: [], links: [["Download resume (PDF)", RESUME_FILE]] });
+    add({ kind: "links", title: "Links github substack articles writing newsletter code", go: "links", label: "Links", lead: "Esha's other places on the web:", lines: [], links: LINKS.map(function (l) { return [l.label, l.url]; }) });
+    add({ kind: "articles", title: "Articles case studies writing", go: "articles", label: "Articles", lead: "Case studies and articles are coming soon. In the meantime, Esha writes on Substack.", lines: [], links: LINKS.filter(function (l) { return /substack/i.test(l.label); }).map(function (l) { return [l.label, l.url]; }) });
+    add({ kind: "meta", title: "who are you PA assistant bot AI help", go: "home", label: "Home", lead: "I'm Esha's PA, a small assistant that reads this portfolio and answers questions about Esha's background, work, projects and skills. I only know what's on this site, so I may not catch everything.", lines: [] });
+
+    /* ---------- retrieval ---------- */
+    KB.forEach(function (c) { c.set = {}; c.all = tok(c.title + " " + c.lead + " " + c.lines.join(" ")); c.all.forEach(function (t) { c.set[t] = (c.set[t] || 0) + 1; }); c.tset = {}; tok(c.title).forEach(function (t) { c.tset[t] = 1; }); });
+    var df = {}; KB.forEach(function (c) { Object.keys(c.set).forEach(function (t) { df[t] = (df[t] || 0) + 1; }); });
+    function idf(t) { return Math.log(1 + KB.length / (1 + (df[t] || 0))); }
+    function expand(q) {
+      var base = tok(q), out = base.slice();
+      base.forEach(function (t) { if (synS[t]) tok(synS[t]).forEach(function (s) { if (out.indexOf(s) < 0) out.push(s); }); });
+      return { base: base, all: out };
+    }
+    function search(q) {
+      var x = expand(q), res = [], wantRec = /recommend|testimonial|colleague|endorse|mentor|manager|said|say|think|review|feedback|praise|people|others|work with|working with/i.test(q);
+      KB.forEach(function (c) {
+        var s = 0;
+        x.all.forEach(function (t) {
+          var w = (x.base.indexOf(t) > -1 ? 1 : 0.55) * idf(t);
+          if (c.tset[t]) s += w * (x.base.indexOf(t) > -1 ? 3.2 : 1.6); else if (c.set[t]) s += w * (1 + Math.min(1, Math.log(1 + c.set[t]) / 3));
+        });
+        var phrase = plain(q).toLowerCase();
+        if (phrase.length > 4 && (c.title.toLowerCase() + " " + c.lead.toLowerCase()).indexOf(phrase) > -1) s += 4;
+        if (c.kind === "rec") { var nh = tok(c.name || "").some(function (t) { return x.base.indexOf(t) > -1; }); if (!wantRec && !nh) s *= 0.4; }
+        if (s > 0) res.push({ c: c, s: s / (1 + 0.12 * Math.log(1 + c.all.length)) });
+      });
+      res.sort(function (a, b) { return b.s - a.s; });
+      return res;
+    }
+    function pickLines(c, q, n) {
+      var qs = {}; expand(q).base.forEach(function (t) { qs[t] = 1; });
+      var sc = c.lines.map(function (l, i) { var s = 0; tok(l).forEach(function (t) { if (qs[t]) s += idf(t); }); return { l: l, i: i, s: s }; });
+      var best = sc.filter(function (x) { return x.s > 0; }).sort(function (a, b) { return b.s - a.s || a.i - b.i; }).slice(0, n).sort(function (a, b) { return a.i - b.i; });
+      if (!best.length) best = sc.slice(0, n);
+      return best.map(function (x) { return x.l; });
+    }
+
+    /* ---------- answering ---------- */
+    var CHIPS = ["What does Esha do today?", "Tell me about her projects", "What skills does she have?", "Where did she study?", "How can I contact her?"];
+    function answer(q) {
+      var t = plain(q).toLowerCase();
+      if (/^(hi|hello|hey|yo|hiya|good (morning|afternoon|evening))\b/.test(t) && t.split(/\s+/).length < 5) return { lead: "Hi! I'm Esha's PA. Ask me anything about Esha's background, experience, projects or skills, and I'll look it up on this portfolio.", chips: CHIPS.slice(0, 4) };
+      if (/^(thanks|thank you|thx|ty|cool|great|awesome|nice)\b/.test(t)) return { lead: "Anytime! Anything else you'd like to know about Esha?", chips: ["Tell me about her projects", "How can I contact her?"] };
+      if (/\b(are you|r u)\b.*\b(ai|bot|human|real|chatgpt|claude)\b|\bwho are you\b|\bwhat are you\b|\bwhat can you do\b/.test(t)) return { lead: KB.filter(function (c) { return c.kind === "meta"; })[0].lead, chips: CHIPS.slice(0, 4) };
+      var res = search(q);
+      if (!res.length || res[0].s < 1.1) {
+        return { lead: "I couldn't find that on Esha's portfolio, and I don't want to guess. Try asking about her experience, projects, skills, education, recommendations or how to reach her. You can also email her directly.", links: [["Email Esha", "mailto:" + CONTACT.email]], chips: CHIPS.slice(0, 4) };
+      }
+      var top = res[0], picks = [top];
+      for (var i = 1; i < res.length && picks.length < 2; i++) if (res[i].s >= top.s * 0.72 && res[i].c.kind === top.c.kind && res[i].c.kind !== "used") picks.push(res[i]);
+      if (top.c.kind === "used" || top.c.kind === "skills") { picks = [top]; }
+      var out = { blocks: [], links: [], go: top.c.go, label: top.c.label };
+      picks.forEach(function (p) {
+        var c = p.c, lines;
+        if (c.kind === "proj") { var head = c.lines.slice(0, 2).filter(Boolean), rest = { lines: c.lines.slice(2), kind: "x" }; lines = head.concat(pickLines(rest, q, 1)).filter(function (v, i, a) { return a.indexOf(v) === i; }); }
+        else lines = c.lines.length ? pickLines(c, q, c.kind === "exp" || c.kind === "edu" ? 3 : 2) : [];
+        lines = lines.map(function (l) { return cut(l, 230); });
+        out.blocks.push({ lead: c.lead, lines: lines });
+        c.links.forEach(function (l) { out.links.push(l); });
+      });
+      var seen = {}; out.links = out.links.filter(function (l) { if (seen[l[1]]) return false; seen[l[1]] = 1; return true; }).slice(0, 4);
+      return out;
+    }
+
+    /* ---------- UI ---------- */
+    var root = document.createElement("div"); root.id = "pa";
+    root.innerHTML = '<button type="button" class="pa-fab" id="pa-open" aria-haspopup="dialog" aria-expanded="false" aria-controls="pa-panel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H11l-4.2 3.6c-.5.4-1.3.1-1.3-.6V16h-.0A2.5 2.5 0 0 1 4 13.5z"/></svg><span>Ask Esha\'s PA</span></button>' +
+      '<section class="pa-panel" id="pa-panel" role="dialog" aria-modal="false" aria-labelledby="pa-title" hidden>' +
+      '<header class="pa-head"><span class="pa-av" aria-hidden="true">PA</span><div><b id="pa-title">Esha\'s PA</b><small>Answers from this portfolio</small></div><button type="button" class="pa-x" id="pa-close" aria-label="Close chat">×</button></header>' +
+      '<div class="pa-log" id="pa-log" role="log" aria-live="polite" aria-relevant="additions"></div>' +
+      '<div class="pa-chips" id="pa-chips"></div>' +
+      '<form class="pa-form" id="pa-form" autocomplete="off"><input id="pa-in" type="text" maxlength="200" placeholder="Ask about Esha…" aria-label="Your question"><button type="submit" class="pa-send" aria-label="Send"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12 20 4l-4 16-4.5-6.5z"/></svg></button></form>' +
+      '<p class="pa-foot">A simple assistant that searches this site. Not a live AI, so it can miss things.</p></section>';
+    document.body.appendChild(root);
+    var fab = document.getElementById("pa-open"), panel = document.getElementById("pa-panel"), log = document.getElementById("pa-log"), chipsEl = document.getElementById("pa-chips"), inp = document.getElementById("pa-in"), started = false;
+
+    function msg(cls) { var d = document.createElement("div"); d.className = "pa-m " + cls; log.appendChild(d); return d; }
+    function scrollEnd() { log.scrollTop = log.scrollHeight; }
+    function setChips(a) { chipsEl.innerHTML = ""; (a || []).forEach(function (t) { var b = document.createElement("button"); b.type = "button"; b.className = "pa-chip"; b.textContent = t; b.addEventListener("click", function () { ask(t); }); chipsEl.appendChild(b); }); }
+    function render(a) {
+      var m = msg("bot");
+      (a.blocks || [{ lead: a.lead, lines: [] }]).forEach(function (b) {
+        if (b.lead) { var p = document.createElement("p"); p.textContent = b.lead; m.appendChild(p); }
+        if (b.lines && b.lines.length) { var ul = document.createElement("ul"); b.lines.forEach(function (l) { var li = document.createElement("li"); li.textContent = l; ul.appendChild(li); }); m.appendChild(ul); }
+      });
+      var act = document.createElement("div"); act.className = "pa-act";
+      (a.links || []).forEach(function (l) { var x = document.createElement("a"); x.href = l[1]; x.textContent = l[0]; if (!/^mailto:/.test(l[1])) { x.target = "_blank"; x.rel = "noopener noreferrer"; } act.appendChild(x); });
+      if (a.go) { var g = document.createElement("button"); g.type = "button"; g.className = "pa-go"; g.setAttribute("data-go", a.go); g.textContent = "Open " + a.label + " →"; act.appendChild(g); }
+      if (act.children.length) m.appendChild(act);
+      setChips(a.chips || ["Tell me about her projects", "What skills does she have?", "How can I contact her?"].filter(function () { return true; }).slice(0, 3));
+      scrollEnd();
+    }
+    function ask(q) {
+      q = plain(q); if (!q) return;
+      msg("me").textContent = q; scrollEnd(); inp.value = "";
+      var a = answer(q);
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      setTimeout(function () { render(a); }, reduce ? 0 : 220);
+    }
+    function open() {
+      panel.hidden = false; fab.setAttribute("aria-expanded", "true"); fab.classList.add("is-open"); document.documentElement.classList.add("pa-on");
+      if (!started) { started = true; render({ lead: "Hi, I'm Esha's PA. Ask me anything about Esha's background, experience, projects or skills, and I'll look it up on this portfolio.", chips: CHIPS }); }
+      setTimeout(function () { inp.focus({ preventScroll: true }); }, 30);
+    }
+    function close() { panel.hidden = true; fab.setAttribute("aria-expanded", "false"); fab.classList.remove("is-open"); document.documentElement.classList.remove("pa-on"); fab.focus({ preventScroll: true }); }
+    fab.addEventListener("click", function () { panel.hidden ? open() : close(); });
+    document.getElementById("pa-close").addEventListener("click", close);
+    document.getElementById("pa-form").addEventListener("submit", function (e) { e.preventDefault(); ask(inp.value); });
+    panel.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.stopPropagation(); close(); } });
+    panel.addEventListener("click", function (e) { if (e.target.closest(".pa-go") && window.matchMedia("(max-width: 700px)").matches) close(); });
+    window.__pa = { answer: answer };
+  })();
 
   buildPage();
   var start = Math.max(0, SECTIONS.findIndex(function (s) { return s.id === location.hash.replace("#", ""); }));
