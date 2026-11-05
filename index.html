@@ -883,7 +883,6 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   /* Accessibility panel */
   var SIZES = [100, 112, 125, 150], prefs = { size: 0, roomy: false, hc: false, easy: false }, hadPrefs = false;
   try { var sp = localStorage.getItem("ek-a11y3"); if (sp) { prefs = Object.assign(prefs, JSON.parse(sp)); hadPrefs = true; } } catch (e) {}
-  if (!hadPrefs && matchMedia("(prefers-contrast: more)").matches) prefs.hc = true;
   var a11yBtn = $("#a11y"), a11yPanel = $("#a11ypanel");
   function applyPrefs() {
     var r = document.documentElement; r.setAttribute("data-size", String(prefs.size));
