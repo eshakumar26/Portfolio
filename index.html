@@ -453,6 +453,12 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
   .pa-fab.is-open { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .pa-fab { transition: none; } }
+
+/* Keep the chat light in both themes */
+#pa { --rail-bg: #ffffff; --bg: #ffffff; --ink: #0c1442; --muted: #5a679c; --line: rgba(60, 90, 200, .2); --accent: #1f4cff; --accent-soft: rgba(31, 76, 255, .08); --on-accent: #ffffff; color-scheme: light; }
+.pa-panel { background: #ffffff; box-shadow: 0 30px 70px -24px rgba(20, 40, 140, .35); }
+.pa-m.bot { background: #f1f5ff; }
+.pa-form input { background: #f8faff; }
 </style>
 </head>
 <body>
