@@ -88,7 +88,7 @@ ul { margin: 0; padding: 0; list-style: none; }
 .scrim { display: none; position: fixed; inset: 0; z-index: 29; background: rgba(3, 18, 34, .55); opacity: 0; pointer-events: none; transition: opacity .5s ease; }
 .scrim.on { opacity: 1; pointer-events: auto; }
 .theme { position: fixed; z-index: 32; top: 12px; right: 16px; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--rail-bg); color: var(--ink); cursor: pointer; display: grid; place-items: center; transition: border-color .25s, transform .5s var(--ease); }
-.theme:hover { border-color: var(--accent); transform: rotate(18deg); }
+@media (hover: hover) { .theme:hover { border-color: var(--accent); transform: rotate(18deg); } }
 .theme svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .theme .ic-sun { display: none; }
 :root[data-theme="dark"] .theme .ic-sun { display: block; }
@@ -406,6 +406,15 @@ html.calm *, html.calm *::before, html.calm *::after { animation: none !importan
 .motionhint { position: fixed; z-index: 33; top: 68px; right: 16px; max-width: 280px; background: var(--rail-bg); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 14px; font-size: .86rem; line-height: 1.45; color: var(--body-ink); box-shadow: 0 14px 34px var(--shadow); }
 .motionhint[hidden] { display: none; }
 .motionhint button { margin-top: 8px; padding: 6px 14px; border-radius: 999px; border: 0; background: var(--accent); color: var(--on-accent); font-weight: 600; cursor: pointer; }
+
+/* Round controls stay perfectly round and upright on phones */
+.theme, .a11y, .railtoggle { box-sizing: border-box; padding: 0; margin: 0; flex: none; -webkit-tap-highlight-color: transparent; -webkit-appearance: none; appearance: none; line-height: 0; box-shadow: 0 6px 18px -8px var(--shadow); touch-action: manipulation; }
+.theme, .a11y { aspect-ratio: 1 / 1; min-width: 44px; min-height: 44px; transform: none; }
+.theme svg, .a11y svg { width: 20px; height: 20px; flex: none; display: block; }
+.theme { top: max(12px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right)); }
+.a11y { top: max(12px, env(safe-area-inset-top)); right: calc(max(16px, env(safe-area-inset-right)) + 52px); }
+.railtoggle { top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); }
+.theme:active, .a11y:active { transform: none; }
 </style>
 </head>
 <body>
