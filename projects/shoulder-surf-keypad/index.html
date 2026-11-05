@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shoulder-surf-proof keypad · Esha Kumar</title>
+<meta name="description" content="An interactive demo of the idea behind my published research on securing graphical passwords from shoulder surfing and camera-based attacks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;1,400&family=Schibsted+Grotesk:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f1f4ff; --panel: #fbfcff; --surface: #ffffff; --ink: #0c1442; --body: #28336b; --muted: #5a679c;
+  --line: rgba(60, 90, 200, .18); --accent: #1f4cff; --accent-soft: rgba(31, 76, 255, .1); --good: #0b7a4b; --bad: #b3261e;
+  --serif: "Fraunces", Georgia, serif; --sans: "Schibsted Grotesk", system-ui, sans-serif; --mono: "DM Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #020615; --panel: rgba(70, 105, 235, .07); --surface: rgba(120, 150, 255, .07); --ink: #f1f4ff; --body: #cfd8ff; --muted: #9aa8e8;
+    --line: rgba(140, 170, 255, .22); --accent: #7ea2ff; --accent-soft: rgba(126, 162, 255, .14); --good: #5fe0a5; --bad: #ff8d86; }
+}
+* { box-sizing: border-box; }
+html { font-size: 93.75%; overflow-x: hidden; }
+body { margin: 0; background: var(--bg); color: var(--body); font: 400 1rem/1.6 var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: var(--accent); }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 28px 18px 56px; }
+.top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-family: var(--mono); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; }
+.top a { text-decoration: none; }
+h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 5vw, 2.8rem); line-height: 1.1; margin: 22px 0 8px; color: var(--ink); text-wrap: balance; }
+.lede { max-width: 62ch; margin: 0 0 22px; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 800px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; min-width: 0; }
+.card h2 { font-size: 1.05rem; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+.card p.sub { margin: 0 0 14px; color: var(--muted); font-size: .92rem; }
+.label { font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.pin { display: flex; gap: 8px; align-items: center; margin: 4px 0 14px; flex-wrap: wrap; }
+.pin b { font-family: var(--mono); font-size: 1.5rem; letter-spacing: .3em; color: var(--ink); }
+.dots { display: flex; gap: 8px; margin: 0 0 14px; }
+.dots i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--accent); }
+.dots i.on { background: var(--accent); }
+.keys { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.key, .btn { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 14px; }
+.key { aspect-ratio: 1 / 1; font-family: var(--mono); font-size: 1.35rem; font-weight: 500; transition: transform .12s ease, border-color .2s ease, background .2s ease; }
+.key:hover, .btn:hover { border-color: var(--accent); }
+.key:active { transform: scale(.94); background: var(--accent-soft); }
+.key:focus-visible, .btn:focus-visible, .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+.btn { padding: 9px 16px; font-size: .9rem; font-weight: 500; border-radius: 999px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.status { min-height: 1.6em; margin-top: 12px; font-size: .92rem; color: var(--ink); }
+.status.ok { color: var(--good); } .status.no { color: var(--bad); }
+.sw { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: .92rem; color: var(--ink); background: none; border: 0; padding: 4px 0; cursor: pointer; }
+.sw i { width: 42px; height: 24px; border-radius: 999px; background: var(--line); position: relative; transition: background .2s ease; flex: none; }
+.sw i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s ease; }
+.sw[aria-checked="true"] i { background: var(--accent); } .sw[aria-checked="true"] i::after { transform: translateX(18px); }
+.log { display: grid; gap: 10px; margin-top: 4px; max-height: 520px; overflow: auto; }
+.att { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface); }
+.att .h { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: .88rem; color: var(--ink); font-weight: 600; }
+.badge { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.badge.same { color: var(--bad); border-color: var(--bad); } .badge.diff { color: var(--good); border-color: var(--good); }
+.strip { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 4px; margin: 10px 0 8px; }
+.strip span { aspect-ratio: 1 / 1; border-radius: 6px; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--mono); font-size: .72rem; color: transparent; }
+.strip span.t { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 500; }
+.mono { font-family: var(--mono); font-size: .82rem; color: var(--body); overflow-wrap: anywhere; }
+.empty { color: var(--muted); font-size: .92rem; padding: 6px 2px; }
+.how { margin-top: 16px; }
+.how ul { margin: 8px 0 0; padding-left: 1.1rem; display: grid; gap: 6px; }
+.note { margin-top: 18px; padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 12px 12px 0; font-size: .92rem; color: var(--ink); }
+.links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.links a { text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: .9rem; font-weight: 500; background: var(--surface); }
+.links a:hover { border-color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="https://eshakumar26.github.io/Portfolio/">&larr; Esha Kumar</a><span class="label">Live demo</span></div>
+  <h1>Shoulder-surf-proof keypad</h1>
+  <p class="lede">Enter the same PIN twice and see what a person watching over your shoulder would learn. Turn the shuffle on and off to compare. This is a simplified, interactive illustration of the idea behind my published research on graphical password security.</p>
+
+  <div class="grid">
+    <section class="card" aria-labelledby="h-pad">
+      <h2 id="h-pad">1. Enter the PIN</h2>
+      <p class="sub">Press the digits of your PIN in order. Your PIN stays the same each attempt, so you can compare.</p>
+      <div class="label">Your PIN</div>
+      <div class="pin"><b id="pin" aria-label="Your practice PIN"></b><button class="btn" id="newpin" type="button">New PIN</button></div>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <div class="keys" id="keys" role="group" aria-label="Keypad"></div>
+      <div class="row">
+        <button class="btn" id="back" type="button">Delete</button>
+        <button class="btn" id="clear" type="button">Start over</button>
+      </div>
+      <div class="row"><button class="sw" id="shuf" type="button" role="switch" aria-checked="true"><i></i><span>Shuffle keys after every press</span></button></div>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-labelledby="h-log">
+      <h2 id="h-log">2. What an observer learns</h2>
+      <p class="sub">Each row shows where on the screen the fingers tapped, in order. If two attempts match, a watcher can copy your PIN.</p>
+      <div class="log" id="log"><div class="empty">Finish an attempt to see it here.</div></div>
+    </section>
+  </div>
+
+  <div class="card how">
+    <h2>How it works</h2>
+    <ul>
+      <li><b>Shuffling.</b> After every press the digits move to new positions. The taps for the same PIN land in different places each time, so watching your fingers teaches an observer very little.</li>
+      <li><b>Cipher layer.</b> The "Seen on the wire" line applies a one-time key to every digit (digit + random key, mod 10), a decimal version of a Vernam cipher. A fresh random key per attempt means the transmitted sequence also changes every time.</li>
+      <li><b>Randomness.</b> Shuffles and keys come from the browser's cryptographic random number generator, because a Vernam cipher is only as strong as its key.</li>
+    </ul>
+    <div class="note">Honest note: this is a simplified illustration, not the prototype from the paper. Shuffling alone does not stop a camera that records both the screen and the tap, which is why the research pairs it with a cipher layer.</div>
+    <div class="links">
+      <a href="https://www.ijrte.org/wp-content/uploads/papers/v11i3/B71640711222.pdf" target="_blank" rel="noopener noreferrer">Read the paper &#8599;</a>
+      <a href="https://github.com/eshakumar26/Securing-Graphical-Password-Techniques-from-Shoulder-Surfing-and-Camera-Based-Attacks" target="_blank" rel="noopener noreferrer">View the prototype on GitHub &#8599;</a>
+      <a href="https://eshakumar26.github.io/Portfolio/">Back to portfolio</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var rnd = function (n) { var a = new Uint32Array(1), lim = Math.floor(4294967296 / n) * n, v; do { crypto.getRandomValues(a); v = a[0]; } while (v >= lim); return v % n; };
+  function shuffle(arr) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = rnd(i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  var SIZE = 4, pin = [], layout = [], entered = [], taps = [], key = [], cipher = [], attempts = [], shuffleOn = true;
+
+  function newPin() { pin = []; for (var i = 0; i < SIZE; i++) pin.push(rnd(10)); attempts = []; $("pin").textContent = pin.join(" "); resetEntry(); renderLog(); say("A new PIN is ready.", ""); }
+  function makeLayout() { layout = shuffleOn ? shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) : [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]; }
+  function resetEntry() { entered = []; taps = []; cipher = []; key = []; for (var i = 0; i < SIZE; i++) key.push(rnd(10)); makeLayout(); drawKeys(); drawDots(); }
+  function say(t, cls) { var s = $("status"); s.textContent = t; s.className = "status " + (cls || ""); }
+  function drawDots() { var h = ""; for (var i = 0; i < SIZE; i++) h += '<i class="' + (i < entered.length ? "on" : "") + '"></i>'; $("dots").innerHTML = h; }
+  function drawKeys() {
+    var h = "";
+    layout.forEach(function (d, p) { h += '<button class="key" type="button" data-p="' + p + '" aria-label="Digit ' + d + '">' + d + "</button>"; });
+    $("keys").innerHTML = h;
+  }
+  function press(p) {
+    var d = layout[p];
+    if (d !== pin[entered.length]) { say("That is not the next digit of your PIN.", "no"); return; }
+    taps.push(p); cipher.push((d + key[entered.length]) % 10); entered.push(d); drawDots();
+    if (entered.length === SIZE) { finish(); return; }
+    makeLayout(); drawKeys(); say(entered.length + " of " + SIZE + " entered.", "");
+    var first = $("keys").querySelector(".key"); if (first && document.activeElement && document.activeElement.classList.contains("key")) first.focus({ preventScroll: true });
+  }
+  function finish() {
+    attempts.unshift({ n: attempts.length + 1, taps: taps.slice(), key: key.slice(), cipher: cipher.slice(), shuffled: shuffleOn });
+    say("PIN accepted. Enter it again to compare the two attempts.", "ok");
+    renderLog(); resetEntry();
+  }
+  function renderLog() {
+    var el = $("log");
+    if (!attempts.length) { el.innerHTML = '<div class="empty">Finish an attempt to see it here.</div>'; return; }
+    el.innerHTML = attempts.map(function (a, idx) {
+      var prev = attempts[idx + 1], badge = "";
+      if (prev) { var same = prev.taps.join() === a.taps.join(); badge = '<span class="badge ' + (same ? "same" : "diff") + '">' + (same ? "Same taps as attempt " : "Different from attempt ") + prev.n + "</span>"; }
+      var strip = ""; for (var p = 0; p < 10; p++) { var k = a.taps.indexOf(p); strip += '<span class="' + (k > -1 ? "t" : "") + '">' + (k > -1 ? k + 1 : "") + "</span>"; }
+      return '<div class="att"><div class="h"><span>Attempt ' + a.n + " &middot; " + (a.shuffled ? "shuffle on" : "shuffle off") + "</span>" + badge + "</div>" +
+        '<div class="strip" role="img" aria-label="Screen positions tapped, in order: ' + a.taps.map(function (x) { return x + 1; }).join(", ") + '">' + strip + "</div>" +
+        '<div class="mono">Tap positions (1 to 10): ' + a.taps.map(function (x) { return x + 1; }).join(" &rarr; ") + "</div>" +
+        '<div class="mono">Seen on the wire: ' + a.cipher.join(" ") + " &nbsp;(random key " + a.key.join(" ") + ")</div></div>";
+    }).join("");
+  }
+
+  $("keys").addEventListener("click", function (e) { var b = e.target.closest(".key"); if (b) press(+b.dataset.p); });
+  $("back").addEventListener("click", function () { if (!entered.length) return; entered.pop(); taps.pop(); cipher.pop(); drawDots(); makeLayout(); drawKeys(); say("Deleted the last digit.", ""); });
+  $("clear").addEventListener("click", function () { resetEntry(); say("Started over.", ""); });
+  $("newpin").addEventListener("click", newPin);
+  $("shuf").addEventListener("click", function () { shuffleOn = !shuffleOn; this.setAttribute("aria-checked", String(shuffleOn)); resetEntry(); say(shuffleOn ? "Shuffle is on." : "Shuffle is off: the keys stay where they are.", ""); });
+  newPin();
+})();
+</script>
+</body>
+</html>
